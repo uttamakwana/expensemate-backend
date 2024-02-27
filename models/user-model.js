@@ -1,51 +1,51 @@
 import mongoose from "mongoose";
 
 //* transaction schema
-const TransactionSchema = new mongoose.Schema({
-  amount: {
-    type: Number,
-    required: [true, "Amount is required!"],
-  },
-  description: {
-    type: String,
-    required: [true, "Description is required!"],
-  },
-  category: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    required: [true, "Transaction created time is requried!"],
-  },
-  updatedAt: {
-    type: Date,
-    required: [true, "Transaction updated time is requried!"],
-  },
-  friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-      share: {
-        type: Number,
-        required: [true, "Share of friend is required!"],
-      },
-      description: {
-        type: String,
-        required: [true, "Description for friend is required!"],
-      },
-      paid: {
-        type: Boolean,
-        default: false,
-      },
-      paidAt: {
-        type: Date,
-      },
+const TransactionSchema = new mongoose.Schema(
+  {
+    amount: {
+      type: Number,
+      required: [true, "Amount is required!"],
     },
-  ],
-  attachement: {
-    type: String,
+    description: {
+      type: String,
+      required: [true, "Description is required!"],
+    },
+    category: {
+      type: String,
+    },
+    friends: [
+      {
+        friendId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "users",
+        },
+        share: {
+          type: Number,
+          required: [true, "Share of friend is required!"],
+        },
+        description: {
+          type: String,
+          required: [true, "Description for friend is required!"],
+        },
+        category: {
+          type: String,
+        },
+        paid: {
+          type: Boolean,
+          default: false,
+        },
+        paidAt: {
+          type: Date,
+        },
+      },
+    ],
+    attachement: {
+      type: String,
+    },
   },
-});
+  { timestamps: true }
+);
 
 //* friend request
 const FriendRequestSchema = new mongoose.Schema({
@@ -90,10 +90,6 @@ const FriendSchema = new mongoose.Schema({
       },
       updatedAt: {
         type: Date,
-        required: [
-          true,
-          "Time of transaction updated for the friend is required",
-        ],
       },
       paid: {
         type: Boolean,

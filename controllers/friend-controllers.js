@@ -72,7 +72,7 @@ export const friendRequest = TryCatch(async (req, res, next) => {
     await user.save();
     await friend.save();
     return response(res, 200, true, "Friend request accepted!");
-  } else if (status === "decline") {
+  } else if (user && friend && status === "decline") {
     user.friendRequests = user.friendRequests.filter(
       (e) => e.userId.toString() !== friendId.toString()
     );
