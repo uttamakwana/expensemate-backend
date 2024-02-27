@@ -61,6 +61,9 @@ const FriendSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
+  name: {
+    type: String,
+  },
   amount: {
     type: Number,
     default: 0,

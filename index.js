@@ -5,7 +5,7 @@ import { connectToDB } from "./lib/database.js";
 import userRoutes from "./routes/user-routes.js";
 import friendRoutes from "./routes/friend-routes.js";
 import transactionRoutes from "./routes/transaction-routes.js";
-import errorMiddleware from "./middlewares/error-middleware.js";
+import { errorMiddleware } from "./middlewares/error-middleware.js";
 
 //* configurations
 dotenv.config();

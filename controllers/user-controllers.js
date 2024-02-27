@@ -1,6 +1,6 @@
 import { response } from "../lib/response.js";
-import TryCatch from "../lib/try-catch.js";
-import ErrorHandler from "../lib/error-handler.js";
+import { TryCatch } from "../lib/try-catch.js";
+import { ErrorHandler } from "../lib/error-handler.js";
 import { User } from "../models/user-model.js";
 //* bcrypt
 import bcrypt from "bcrypt";
@@ -9,7 +9,7 @@ import bcrypt from "bcrypt";
 //* POST
 //* Pubilc
 //* localhost:4000/user/register``
-export const login = TryCatch(async (req, res, next) => {
+export const register = TryCatch(async (req, res, next) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return next(new ErrorHandler("All fields are required!", 400));
@@ -28,7 +28,7 @@ export const login = TryCatch(async (req, res, next) => {
 //* POST
 //* Pubilc
 //* localhost:4000/user/login
-export const register = TryCatch(async (req, res, next) => {
+export const login = TryCatch(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return next(new ErrorHandler("All fields are required!", 400));
