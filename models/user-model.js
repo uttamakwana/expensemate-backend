@@ -98,6 +98,9 @@ const FriendSchema = new mongoose.Schema({
       paidAt: {
         type: Date,
       },
+      paidId: {
+        type: String,
+      },
     },
   ],
 });
