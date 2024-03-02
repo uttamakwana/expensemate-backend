@@ -14,9 +14,14 @@ export const register = TryCatch(async (req, res, next) => {
   if (!name || !email || !password) {
     return next(new ErrorHandler("All fields are required!", 400));
   } else {
+    let user;
+    // checking if user already exists or not!
+    user = await User.findOne({ email });
+    if (user) {
+      return next(new ErrorHandler("User already exists!", 400));
+    }
     // hasing the password for encryption(security)
     const hashedPassword = await bcrypt.hash(password, 10);
-    let user;
     if (hashedPassword) {
       user = await User.create({ name, email, password: hashedPassword });
     }
@@ -33,7 +38,7 @@ export const login = TryCatch(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorHandler("All fields are required!", 400));
   } else {
-    const user = await User.findOne({ email }).select("password");
+    const user = await User.findOne({ email });
     if (!user) {
       return next(new ErrorHandler("User not found!", 404));
     }
@@ -55,7 +60,17 @@ export const getAllUsers = TryCatch(async (req, res, next) => {
   if (users.length === 0) {
     return response(res, 404, false, "No users found!");
   }
-  return response(res, 200, true, "Users retrieved successfully!", users);
+  return response(res, 200, true, "Users retrieved successfully!", { users });
+});
+
+export const getUserInfo = TryCatch(async (req, res, next) => {
+  const { id } = req.query;
+  const user = await User.findById(id);
+  if (!user) {
+    return next(new ErrorHandler("User not found!", 4004));
+  } else {
+    return response(res, 200, true, "User found!", { user });
+  }
 });
 
 //TODO: Create a Logout API once authentication is established

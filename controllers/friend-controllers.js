@@ -18,6 +18,7 @@ export const sendFriendRequest = TryCatch(async (req, res, next) => {
       new ErrorHandler("You can't send friend request to yourself!", 400)
     );
   }
+
   if (!isValidId(userId) || !isValidId(friendId)) {
     return next(new ErrorHandler("Provide a valid Id!", 400));
   }
@@ -31,7 +32,11 @@ export const sendFriendRequest = TryCatch(async (req, res, next) => {
     );
     if (isReqAlreadyExist === -1) {
       // request does not exist!
-      friend.friendRequests.push({ userId });
+      friend.friendRequests.push({
+        userId,
+        name: user.name,
+        email: user.email,
+      });
       await friend.save();
       return response(res, 200, true, "Request sent successfully!");
     } else {
@@ -64,8 +69,12 @@ export const friendRequest = TryCatch(async (req, res, next) => {
   const friend = await User.findById(friendId);
   if (user && friend && status === "accept") {
     // users found! now accept the friend request
-    user.friends.push({ friendId, name: friend.name });
-    friend.friends.push({ friendId: userId, name: user.name });
+    user.friends.push({ friendId, name: friend.name, email: friend.email });
+    friend.friends.push({
+      friendId: userId,
+      name: user.name,
+      email: user.email,
+    });
     user.friendRequests = user.friendRequests.filter(
       (e) => e.userId.toString() !== friendId.toString()
     );

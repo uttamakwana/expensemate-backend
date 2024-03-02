@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 //* routes
-router.post("/send-request/", sendFriendRequest);
+router.post("/send-request", sendFriendRequest);
 router.post("/request", friendRequest);
 export default router;

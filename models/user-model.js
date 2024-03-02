@@ -53,6 +53,12 @@ const FriendRequestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
+  name: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
 });
 
 //* friend schema
@@ -62,6 +68,9 @@ const FriendSchema = new mongoose.Schema({
     ref: "users",
   },
   name: {
+    type: String,
+  },
+  email: {
     type: String,
   },
   amount: {
