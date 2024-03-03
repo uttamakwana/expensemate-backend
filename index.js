@@ -38,6 +38,8 @@ app.use("/api/v1/transaction", transactionRoutes);
 //* wherever you use 'return next(new ErrorHandler(message, statusCode)) the req will be come here and error will be throwed!
 app.use(errorMiddleware);
 
+app.use("/uploads", express.static("uploads"));
+
 //* connect to the database then only connect to the server
 const { connected } = await connectToDB();
 if (connected) {

@@ -20,6 +20,9 @@ const TransactionSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "users",
         },
+        name: {
+          type: String,
+        },
         share: {
           type: Number,
           required: [true, "Share of friend is required!"],
@@ -48,71 +51,83 @@ const TransactionSchema = new mongoose.Schema(
 );
 
 //* friend request
-const FriendRequestSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+const FriendRequestSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
   },
-  name: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 //* friend schema
-const FriendSchema = new mongoose.Schema({
-  friendId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
-  },
-  name: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-  amount: {
-    type: Number,
-    default: 0,
-  },
-  transactions: [
-    {
-      share: {
-        type: Number,
-        required: [true, "Share of friend is required!"],
-      },
-      category: {
-        type: String,
-      },
-      description: {
-        type: String,
-        required: [true, "Description of friend is required"],
-      },
-      createdAt: {
-        type: Date,
-        required: [
-          true,
-          "Time of transaction created for the friend is required",
-        ],
-      },
-      updatedAt: {
-        type: Date,
-      },
-      paid: {
-        type: Boolean,
-        default: false,
-      },
-      paidAt: {
-        type: Date,
-      },
-      paidId: {
-        type: String,
-      },
+const FriendSchema = new mongoose.Schema(
+  {
+    friendId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
-  ],
-});
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
+    amount: {
+      type: Number,
+      default: 0,
+    },
+    transactions: [
+      {
+        share: {
+          type: Number,
+          required: [true, "Share of friend is required!"],
+        },
+        category: {
+          type: String,
+        },
+        description: {
+          type: String,
+          required: [true, "Description of friend is required"],
+        },
+        createdAt: {
+          type: Date,
+          required: [
+            true,
+            "Time of transaction created for the friend is required",
+          ],
+        },
+        updatedAt: {
+          type: Date,
+        },
+        paid: {
+          type: Boolean,
+          default: false,
+        },
+        paidAt: {
+          type: Date,
+        },
+        paidId: {
+          type: String,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 //* final user schema
 const UserSchema = new mongoose.Schema(
@@ -128,8 +143,8 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password requried!"],
     },
+    avatar: String,
     friends: [FriendSchema],
     friendRequests: [FriendRequestSchema],
     transactions: [TransactionSchema],

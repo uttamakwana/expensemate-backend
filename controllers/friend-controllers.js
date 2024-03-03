@@ -30,12 +30,23 @@ export const sendFriendRequest = TryCatch(async (req, res, next) => {
     const isReqAlreadyExist = friend.friendRequests?.findIndex(
       (e) => e.userId.toString() === userId.toString()
     );
+    const isAlreadyRequested = user.friendRequests?.find(
+      (e) => e.userId.toString() === friendId.toString()
+    );
+
+    if (isAlreadyRequested) {
+      return next(
+        new ErrorHandler("Friend has already sent you a request", 400)
+      );
+    }
+
     if (isReqAlreadyExist === -1) {
       // request does not exist!
       friend.friendRequests.push({
         userId,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
       });
       await friend.save();
       return response(res, 200, true, "Request sent successfully!");
@@ -50,7 +61,7 @@ export const sendFriendRequest = TryCatch(async (req, res, next) => {
 //* Accept Friend Request
 //* POST
 //* Pubilc | Auth
-//* localhost:4000/friend/accept-request
+//* localhost:4000/friend/request
 export const friendRequest = TryCatch(async (req, res, next) => {
   const { userId, friendId } = req.body;
   const { status } = req.query;
@@ -69,11 +80,17 @@ export const friendRequest = TryCatch(async (req, res, next) => {
   const friend = await User.findById(friendId);
   if (user && friend && status === "accept") {
     // users found! now accept the friend request
-    user.friends.push({ friendId, name: friend.name, email: friend.email });
+    user.friends.push({
+      friendId,
+      name: friend.name,
+      email: friend.email,
+      avatar: friend.avatar,
+    });
     friend.friends.push({
       friendId: userId,
       name: user.name,
       email: user.email,
+      avatar: user.avatar,
     });
     user.friendRequests = user.friendRequests.filter(
       (e) => e.userId.toString() !== friendId.toString()

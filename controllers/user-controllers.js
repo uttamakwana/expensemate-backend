@@ -10,23 +10,32 @@ import bcrypt from "bcrypt";
 //* Pubilc
 //* localhost:4000/user/register``
 export const register = TryCatch(async (req, res, next) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, email, password, avatar } = req.body;
+  if (!name || !email) {
     return next(new ErrorHandler("All fields are required!", 400));
-  } else {
-    let user;
-    // checking if user already exists or not!
-    user = await User.findOne({ email });
-    if (user) {
-      return next(new ErrorHandler("User already exists!", 400));
-    }
+  }
+  let user;
+  // checking if user already exists or not!
+  user = await User.findOne({ email });
+  if (user) {
+    return next(new ErrorHandler("User already exists!", 400));
+  }
+  if (password) {
+    const image = req.file;
     // hasing the password for encryption(security)
     const hashedPassword = await bcrypt.hash(password, 10);
     if (hashedPassword) {
-      user = await User.create({ name, email, password: hashedPassword });
+      user = await User.create({
+        name,
+        email,
+        password: hashedPassword,
+        avatar: image?.path,
+      });
     }
-    return response(res, 200, true, "Registration successfull!", { user });
+  } else {
+    user = await User.create({ name, email, avatar });
   }
+  return response(res, 200, true, "Registration successfull!", { user });
 });
 
 //* User Login
@@ -35,19 +44,21 @@ export const register = TryCatch(async (req, res, next) => {
 //* localhost:4000/user/login
 export const login = TryCatch(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) {
+  if (!email) {
     return next(new ErrorHandler("All fields are required!", 400));
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new ErrorHandler("User not found!", 404));
+  }
+  if (user && !password) {
+    return response(res, 200, true, "Login successfull!", { user });
+  }
+  const isCorrectPassword = await bcrypt.compare(password, user.password);
+  if (!isCorrectPassword) {
+    return next(new ErrorHandler("Email or password maybe wrong!!", 400));
   } else {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return next(new ErrorHandler("User not found!", 404));
-    }
-    const isCorrectPassword = await bcrypt.compare(password, user.password);
-    if (!isCorrectPassword) {
-      return next(new ErrorHandler("Email or password maybe wrong!!", 400));
-    } else {
-      return response(res, 200, true, "Login successfull!", { user });
-    }
+    return response(res, 200, true, "Login successfull!", { user });
   }
 });
 

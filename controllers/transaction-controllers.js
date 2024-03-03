@@ -52,6 +52,7 @@ async function splitBill(user, friend) {
   if (userFriend) {
     userFriend.transactions.push({
       share: friend.share,
+      name: friend.name,
       description: friend.description,
       category: friend.category ? friend.category : "",
       createdAt: new Date(),
@@ -70,6 +71,7 @@ async function splitBill(user, friend) {
   if (friendInUserList) {
     friendInUserList.transactions.push({
       share: friend.share,
+      name: friend.name,
       description: friend.description,
       category: friend.category ? friend.category : "",
       createdAt: new Date(),
